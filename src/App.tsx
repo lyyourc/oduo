@@ -1,22 +1,28 @@
-import * as React from 'react';
-import './App.css';
-
-import logo from './logo.svg';
+import * as React from 'react'
+import { Flex, Provider } from 'rebass'
+import Cheatsheets from './cheatsheets'
+import Main from './main'
+import SearchBar from './searchBar'
+import StyledAside from './styled/StyledAside'
+import StyledMain from './styled/StyledMain'
 
 class App extends React.Component {
   public render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
-    );
+      <Provider>
+        <Flex>
+          <StyledAside p={10}>
+            <SearchBar />
+            <Cheatsheets />
+          </StyledAside>
+
+          <StyledMain is="main" flex="1" p={10}>
+            <Main />
+          </StyledMain>
+        </Flex>
+      </Provider>
+    )
   }
 }
 
-export default App;
+export default App
