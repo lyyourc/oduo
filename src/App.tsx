@@ -1,28 +1,42 @@
 import * as React from 'react'
-import { Flex, Provider } from 'rebass'
+import { Box, Flex, Provider } from 'rebass'
+import styled from 'styled-components'
 import Cheatsheets from './cheatsheets'
 import Main from './main'
 import SearchBar from './searchBar'
-import StyledAside from './styled/StyledAside'
-import StyledMain from './styled/StyledMain'
 
-class App extends React.Component {
+export default class App extends React.Component {
+  public state = {
+    cheatsheets: [
+      { name: 'JavaScript', items: [{ name: 'ES6', items: [] }] },
+      { name: 'CSS', items: [{ name: 'CSS in JS', items: [] }] },
+    ]
+  }
+
   public render() {
     return (
       <Provider>
         <Flex>
-          <StyledAside p={10}>
-            <SearchBar />
-            <Cheatsheets />
+          <StyledAside flexDirection="column">
+            <Box bg="gray" p={2}>
+              <SearchBar />
+            </Box>
+            <Box flex="1" p={2}>
+              <Cheatsheets items={this.state.cheatsheets} />
+            </Box>
           </StyledAside>
 
-          <StyledMain is="main" flex="1" p={10}>
+          <Box is="main" flex="1" p={10}>
             <Main />
-          </StyledMain>
+          </Box>
         </Flex>
       </Provider>
     )
   }
 }
 
-export default App
+const StyledAside = styled(Flex)`
+  height: 100vh;
+  border: 1px solid ${props => props.theme.colors.gray};
+  width: 260px;
+`
