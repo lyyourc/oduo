@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { NavLink } from 'react-router-dom'
 import { Arrow, Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -6,6 +7,7 @@ interface ITreeNode {
   name: string
   items: ITreeNode[]
   isRoot?: boolean
+  path?: any
 }
 
 interface IProps {
@@ -29,18 +31,20 @@ export default class Tree extends React.Component<IProps, IState> {
     return (
       <div>
         {data.name && (
-          <StyledNodeName
-            py={1}
-            alignItems="center"
-            collapsable={collapsable}
-            onClick={this.handleNodeNameClick}>
+          <StyledLink to={data.path} exact={true}>
+            <StyledNodeName
+              py={1}
+              alignItems="center"
+              collapsable={collapsable}>
               <StyledArrow
                 hidden={!collapsable}
                 collapsed={collpased}
                 direction="down"
+                onClick={this.handleNodeNameClick}
               />
-            <Text pl={1}>{data.name}</Text>
-          </StyledNodeName>
+              <Text pl={1}>{data.name}</Text>
+            </StyledNodeName>
+          </StyledLink>
         )}
         {!collpased && (
           <Box pl={data.isRoot ? 0 : 2}>
@@ -51,8 +55,10 @@ export default class Tree extends React.Component<IProps, IState> {
     )
   }
 
-  public handleNodeNameClick = () => {
-    /* tslint:disable */
+  public handleNodeNameClick = (event: React.SyntheticEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+
     this.setState({
       collpased: !this.state.collpased,
     })
@@ -64,13 +70,23 @@ interface IStyleArrow {
   collapsed?: boolean
 }
 const StyledArrow = styled(Arrow)<IStyleArrow>`
-  visibility: ${props => props.hidden ? 'hidden' : 'visible'};
-  transform: rotate(${props => props.collapsed ? '-90' : '0'}deg);
+  visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
+  transform: rotate(${props => (props.collapsed ? '-90' : '0')}deg);
 `
 
 interface IStyledNodeName {
   collapsable?: boolean
 }
 const StyledNodeName = styled(Flex)<IStyledNodeName>`
-  cursor: ${props => (props.collapsable ? 'pointer' : 'auto')};
+  cursor: ${props => (props.collapsable ? 'pointer' : 'default')};
+`
+
+const StyledLink = styled(NavLink)`
+  text-decoration: none;
+  color: inherit;
+  display: block;
+
+  &.active {
+    background: ${props => props.theme.colors.gray};
+  }
 `

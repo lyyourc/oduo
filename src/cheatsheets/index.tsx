@@ -3,6 +3,7 @@ import Tree from './Tree'
 
 interface ICheatSheet {
   name: string
+  path?: string
   items: ICheatSheet[]
 }
 
@@ -20,12 +21,31 @@ export default class CheatSheets extends React.Component<IProps, IState> {
       isRoot: true,
       items: this.props.items,
       name: '',
+      path: '',
     }
+
+    const treeData = this.normalizeCheatsheets(cheatsheets, undefined)
 
     return (
       <div>
-        <Tree data={cheatsheets} />
+        <Tree data={treeData} />
       </div>
     )
+  }
+
+  private normalizeCheatsheets = (
+    node: ICheatSheet,
+    parent?: ICheatSheet
+  ): ICheatSheet => {
+    const newNode = {
+      ...node,
+      path:
+        parent == null ? '' : parent.path + '/' + node.name.replace(/\s+/g, '_'),
+    }
+
+    return {
+      ...newNode,
+      items: node.items.map(child => this.normalizeCheatsheets(child, newNode)),
+    }
   }
 }
